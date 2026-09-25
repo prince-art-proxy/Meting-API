@@ -1243,6 +1243,14 @@ class DataStore {
 }
 
 const store = new DataStore()
-await store.init()
 
+
+let _initPromise = null
+const ensureInit = () => {
+    if (!_initPromise) _initPromise = store.init()
+    return _initPromise
+}
+
+
+export { ensureInit }
 export default store
