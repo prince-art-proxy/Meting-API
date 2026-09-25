@@ -1,0 +1,7 @@
+name = "seahorsify-music"
+main = "app.js"
+compatibility_date = "2025-11-21"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
