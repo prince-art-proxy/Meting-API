@@ -136,18 +136,17 @@ class DataStore {
         this.initialized = false
     }
 
-    async init() {
-        if (this.initialized) return
-        
-        if (isServerRuntime && runtime === 'node') {
-            try {
-                if (!fs.existsSync(DATA_DIR)) {
-                    fs.mkdirSync(DATA_DIR, { recursive: true })
-                }
-                await this.loadFromFile()
-            } catch (e) {
-                console.log('DataStore init:', e.message)
+async init() {
+    if (this.initialized) return;
+    
+    if (isServerRuntime && runtime === 'node') {
+        try {
+            if (!fs.existsSync(DATA_DIR)) {
+                fs.mkdirSync(DATA_DIR, { recursive: true })
             }
+            await this.loadFromFile()
+        } catch (e) {
+            console.log('DataStore init:', e.message)
         }
         
         if (this.users.size === 0) {
@@ -159,9 +158,10 @@ class DataStore {
             })
             await this.saveToFile()
         }
-        
-        this.initialized = true
     }
+    
+    this.initialized = true
+}
 
     hashPassword(password, salt = null) {
         if (!salt) {
