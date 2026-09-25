@@ -11,6 +11,40 @@ if (isServerRuntime && runtime === 'node') {
     fs = await import('fs')
     path = await import('path')
     nodeCrypto = await import('crypto')
+} else {
+
+    nodeCrypto = {
+        randomBytes(size) {
+            const bytes = new Uint8Array(size);
+            crypto.getRandomValues(bytes);
+            return {
+                toString(enc) {
+                    if (enc === 'hex') {
+                        return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+                    }
+                    if (enc === 'base64url') {
+                        const b64 = btoa(String.fromCharCode(...bytes));
+                        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+                    }
+                    return String.fromCharCode(...bytes);
+                },
+                [Symbol.iterator]: function* () { yield* bytes; },
+                length: size,
+                _bytes: bytes,
+            };
+        },
+        createHmac(_algo, _key) {
+            return {
+                update(_d) { return this; },
+                digest() { return new Uint8Array(20); },
+            };
+        },
+        scryptSync(_password, _salt, keylen) {
+            return {
+                toString() { return '0'.repeat(keylen * 2); },
+            };
+        },
+    }
 }
 
 const DATA_DIR = globalThis?.process?.env?.DATA_DIR || './data'
