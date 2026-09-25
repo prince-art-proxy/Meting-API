@@ -2,6 +2,7 @@ import Providers from "../providers/index.js"
 import { format as lyricFormat, get_url } from "../util.js"
 import store from "../admin/store.js"
 import apiLogger from "./api-logger.js"
+import { ensureInit } from '../admin/store.js'
 
 const parseCookieString = (cookieString) => {
     if (!cookieString) return {}
