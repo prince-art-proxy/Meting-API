@@ -1,5 +1,5 @@
 name = "seahorsify-music"
-main = "index.js"
+main = "app.js"
 compatibility_date = "2026-09-25"
 compatibility_flags = []
 
