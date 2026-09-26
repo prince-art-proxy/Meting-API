@@ -21,6 +21,7 @@ export default async (ctx) => {
     const ip = apiLogger.getClientIP(ctx)
 
     const p = new Providers()
+    await ensureInit()
 
     const query = ctx.req.query()
     const server = query.server || 'tencent'
@@ -76,12 +77,19 @@ export default async (ctx) => {
             }
         }
 
-        let cookie = ''
-        const storedCookie = store.getActiveCookie(server)
-        if (storedCookie) {
-            cookie = storedCookie.cookie
-        }
+let cookie = ''
+const storedCookie = store.getActiveCookie(server)
+if (storedCookie) {
+    cookie = storedCookie.cookie
+}
 
+if (!cookie && ctx.env) {
+    if (server === 'netease' && ctx.env.NETEASE_COOKIE) {
+        cookie = ctx.env.NETEASE_COOKIE
+    } else if (server === 'tencent' && ctx.env.TENCENT_COOKIE) {
+        cookie = ctx.env.TENCENT_COOKIE
+    }
+}
         let data = await p.get(server).handle(type, id, cookie)
 
         if (type === 'url') {
